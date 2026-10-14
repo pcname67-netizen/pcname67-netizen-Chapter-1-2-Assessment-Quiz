@@ -1,0 +1,2286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chapter 1 &amp; 2 Assessment Quiz</title>
+<style>
+  /* =====================================================================
+     DESIGN TOKENS  (change colors here to re-theme the whole quiz)
+     ===================================================================== */
+  :root {
+    --navy-900: #0a1f44;
+    --navy-800: #102a5c;
+    --navy-700: #1b3a7a;
+    --blue-600: #2563c9;
+    --blue-500: #3b7ae0;
+    --blue-200: #c7dafa;
+    --blue-100: #e3edfc;
+    --blue-50:  #f1f6fe;
+    --page-bg:  #f3f6fb;
+    --card-bg:  #ffffff;
+    --line:     #d9e2f1;
+    --text:     #14233f;
+    --text-soft:#5a6b88;
+    --good:     #1b8a5a;
+    --good-bg:  #e4f6ed;
+    --bad:      #c23b3b;
+    --bad-bg:   #fdeaea;
+    --warn:     #9a6700;
+    --warn-bg:  #fff4d6;
+    --radius:   14px;
+    --shadow:   0 1px 2px rgba(10, 31, 68, .06), 0 6px 20px rgba(10, 31, 68, .06);
+    --font: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--page-bg);
+    line-height: 1.55;
+  }
+  button { font-family: inherit; }
+  :focus-visible { outline: 3px solid var(--blue-500); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    background: linear-gradient(135deg, var(--navy-900), var(--navy-700));
+    color: #fff;
+    padding: 28px 20px 64px;
+  }
+  .header-inner { max-width: 1120px; margin: 0 auto; }
+  .site-header h1 { margin: 0 0 6px; font-size: clamp(1.45rem, 3.4vw, 2rem); letter-spacing: -.01em; }
+  .site-header p  { margin: 0; max-width: 62ch; color: #cfdcf5; }
+  .header-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .chip {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    padding: 4px 12px; border-radius: 999px; font-size: .85rem;
+  }
+
+  /* ---------- Layout ---------- */
+  .container { max-width: 1120px; margin: -40px auto 48px; padding: 0 16px; }
+  .quiz-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+
+  /* ---------- Banners ---------- */
+  .banner { padding: 12px 16px; border-radius: 10px; font-size: .92rem; margin-bottom: 16px; }
+  .banner.warn { background: var(--warn-bg); color: var(--warn); border: 1px solid #f0dc9c; }
+  .banner.error { background: var(--bad-bg); color: var(--bad); border: 1px solid #f1c0c0; }
+
+  /* ---------- Progress ---------- */
+  .progress-card { padding: 16px 20px; margin-bottom: 16px; }
+  .progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .progress-top strong { font-size: 1.05rem; }
+  .progress-top span { color: var(--text-soft); font-size: .9rem; }
+  .progress-track { height: 10px; background: var(--blue-100); border-radius: 999px; margin-top: 10px; overflow: hidden; }
+  .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue-600), var(--blue-500)); border-radius: 999px; transition: width .35s ease; }
+
+  /* ---------- Question card ---------- */
+  .question-card { padding: 26px 26px 22px; }
+  .q-label { display: inline-block; font-size: .85rem; font-weight: 600; color: var(--blue-600); background: var(--blue-100); padding: 3px 12px; border-radius: 999px; margin-bottom: 12px; }
+  .q-label.ungraded { color: var(--warn); background: var(--warn-bg); }
+  .q-text { font-size: clamp(1.1rem, 2.4vw, 1.3rem); font-weight: 600; margin: 0 0 20px; line-height: 1.45; }
+
+  fieldset.options { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .option {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 14px 16px;
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color .15s, background-color .15s, transform .15s, box-shadow .15s;
+  }
+  .option:hover { border-color: var(--blue-500); background: var(--blue-50); }
+  .option input { position: absolute; opacity: 0; pointer-events: none; }
+  .option:focus-within { outline: 3px solid var(--blue-500); outline-offset: 2px; }
+  .option .marker {
+    flex: none; width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center; font-weight: 700; font-size: .85rem;
+    background: var(--blue-100); color: var(--navy-700);
+    transition: background-color .15s, color .15s;
+  }
+  .option .label { padding-top: 3px; }
+  .option.selected { border-color: var(--blue-600); background: var(--blue-100); box-shadow: 0 0 0 3px rgba(37, 99, 201, .12); }
+  .option.selected .marker { background: var(--blue-600); color: #fff; }
+
+  .nav-buttons { display: flex; justify-content: space-between; gap: 12px; margin-top: 22px; }
+  .btn {
+    border: 0; border-radius: 10px; padding: 11px 20px; font-size: 1rem; font-weight: 600;
+    cursor: pointer; transition: background-color .15s, transform .1s, box-shadow .15s, opacity .15s;
+  }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-primary { background: var(--blue-600); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--navy-700); }
+  .btn-secondary { background: #fff; color: var(--navy-700); border: 2px solid var(--line); }
+  .btn-secondary:hover:not(:disabled) { border-color: var(--blue-500); background: var(--blue-50); }
+  .btn-submit { background: var(--navy-900); color: #fff; width: 100%; }
+  .btn-submit:hover:not(:disabled) { background: var(--navy-700); }
+  .btn-link { background: none; border: 0; color: var(--text-soft); text-decoration: underline; cursor: pointer; font-size: .9rem; padding: 6px; }
+  .btn-link:hover { color: var(--navy-700); }
+
+  /* ---------- Navigator panel ---------- */
+  .panel { padding: 20px; position: sticky; top: 16px; }
+  .panel h2 { margin: 0 0 4px; font-size: 1.05rem; }
+  .panel .summary { margin: 0 0 14px; color: var(--text-soft); font-size: .9rem; }
+  .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(40px, 1fr)); gap: 6px; max-height: 320px; overflow-y: auto; padding: 2px; }
+  .nav-btn {
+    height: 40px; border-radius: 9px; border: 2px solid var(--line); background: #fff; color: var(--text-soft);
+    font-weight: 600; font-size: .85rem; cursor: pointer; transition: all .15s;
+  }
+  .nav-btn:hover { border-color: var(--blue-500); color: var(--navy-700); }
+  .nav-btn.answered { background: var(--blue-100); border-color: var(--blue-200); color: var(--navy-700); }
+  .nav-btn.current { background: var(--navy-800); border-color: var(--navy-800); color: #fff; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 14px 0; font-size: .8rem; color: var(--text-soft); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 14px; height: 14px; border-radius: 4px; border: 2px solid var(--line); background: #fff; display: inline-block; }
+  .legend i.answered { background: var(--blue-100); border-color: var(--blue-200); }
+  .legend i.current  { background: var(--navy-800); border-color: var(--navy-800); }
+  .panel-actions { display: grid; gap: 6px; margin-top: 6px; text-align: center; }
+
+  /* ---------- Results ---------- */
+  .results-head { padding: 28px; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 28px; align-items: center; margin-bottom: 20px; }
+  .score-ring {
+    --pct: 0;
+    width: 150px; height: 150px; border-radius: 50%;
+    background: conic-gradient(var(--blue-600) calc(var(--pct) * 1%), var(--blue-100) 0);
+    display: grid; place-items: center;
+  }
+  .score-ring > div { width: 118px; height: 118px; border-radius: 50%; background: #fff; display: grid; place-items: center; text-align: center; }
+  .score-ring strong { font-size: 1.9rem; line-height: 1; color: var(--navy-800); }
+  .score-ring small { display: block; color: var(--text-soft); font-size: .78rem; margin-top: 4px; }
+  .results-head h2 { margin: 0 0 4px; font-size: 1.5rem; }
+  .results-head p { margin: 0 0 14px; color: var(--text-soft); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; }
+  .stat { padding: 10px 14px; border-radius: 10px; background: var(--blue-50); border: 1px solid var(--line); }
+  .stat b { display: block; font-size: 1.35rem; color: var(--navy-800); }
+  .stat span { font-size: .82rem; color: var(--text-soft); }
+  .stat.good b { color: var(--good); }
+  .stat.bad b { color: var(--bad); }
+  .stat.warn b { color: var(--warn); }
+
+  .review-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin: 8px 0 14px; }
+  .review-toolbar h3 { margin: 0; font-size: 1.2rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: 6px; }
+  .filter-btn { border: 2px solid var(--line); background: #fff; border-radius: 999px; padding: 5px 14px; font-size: .85rem; font-weight: 600; color: var(--text-soft); cursor: pointer; transition: all .15s; }
+  .filter-btn:hover { border-color: var(--blue-500); color: var(--navy-700); }
+  .filter-btn[aria-pressed="true"] { background: var(--navy-800); border-color: var(--navy-800); color: #fff; }
+
+  .review-list { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; list-style: none; margin: 0; padding: 0; }
+  .review-item { padding: 20px 22px; border-left: 6px solid var(--line); }
+  .review-item.correct { border-left-color: var(--good); }
+  .review-item.incorrect, .review-item.unanswered { border-left-color: var(--bad); }
+  .review-item.ungraded { border-left-color: var(--warn); }
+  .review-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
+  .review-top strong { color: var(--navy-700); }
+  .badge { font-size: .8rem; font-weight: 700; padding: 3px 12px; border-radius: 999px; }
+  .badge.correct { background: var(--good-bg); color: var(--good); }
+  .badge.incorrect, .badge.unanswered { background: var(--bad-bg); color: var(--bad); }
+  .badge.ungraded { background: var(--warn-bg); color: var(--warn); }
+  .review-q { margin: 0 0 12px; font-weight: 600; }
+  .review-options { list-style: none; margin: 0 0 12px; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .review-options li { min-width: 0; display: flex; gap: 10px; padding: 8px 12px; border-radius: 9px; border: 1px solid var(--line); font-size: .95rem; }
+  .review-options li .tag { margin-left: auto; font-size: .75rem; font-weight: 700; white-space: nowrap; padding-left: 8px; }
+  .review-options li.is-correct { background: var(--good-bg); border-color: #a9dcc3; }
+  .review-options li.is-correct .tag { color: var(--good); }
+  .review-options li.is-wrong { background: var(--bad-bg); border-color: #efbcbc; }
+  .review-options li.is-wrong .tag { color: var(--bad); }
+  .review-options li.is-picked-ungraded { background: var(--blue-100); border-color: var(--blue-200); }
+  .review-options li.is-picked-ungraded .tag { color: var(--navy-700); }
+  .review-answers { margin: 0; font-size: .9rem; color: var(--text-soft); display: grid; gap: 2px; }
+  .review-answers b { color: var(--text); }
+  .empty-note { text-align: center; color: var(--text-soft); padding: 28px; }
+  .results-actions { display: flex; justify-content: center; margin-top: 24px; }
+
+  /* ---------- Confirm dialog ---------- */
+  dialog { border: 0; border-radius: var(--radius); padding: 24px; max-width: 420px; width: calc(100% - 32px); box-shadow: 0 20px 60px rgba(10,31,68,.35); color: var(--text); }
+  dialog::backdrop { background: rgba(10, 31, 68, .55); }
+  dialog h2 { margin: 0 0 8px; font-size: 1.2rem; }
+  dialog p { margin: 0 0 20px; color: var(--text-soft); }
+  .dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 900px) {
+    .quiz-layout { grid-template-columns: 1fr; }
+    .panel { position: static; }
+    .nav-grid { max-height: 240px; }
+  }
+  @media (max-width: 560px) {
+    .site-header { padding: 22px 16px 56px; }
+    .question-card { padding: 20px 16px; }
+    .results-head { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 22px 16px; }
+    .btn { padding: 11px 14px; }
+    .review-item { padding: 16px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <h1 id="quizTitle">Quiz</h1>
+    <p id="quizDescription"></p>
+    <div class="header-meta" id="headerMeta"></div>
+  </div>
+</header>
+
+<main class="container">
+  <div id="banners"></div>
+
+  <!-- ================= QUIZ VIEW ================= -->
+  <div class="quiz-layout" id="quizView">
+    <section aria-label="Quiz question">
+      <div class="card progress-card">
+        <div class="progress-top">
+          <strong id="questionCounter" aria-live="polite">Question 1 of 1</strong>
+          <span id="progressText">0 answered</span>
+        </div>
+        <div class="progress-track" role="progressbar" id="progressBar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Quiz progress">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <article class="card question-card">
+        <span class="q-label" id="questionLabel">Question 1</span>
+        <fieldset class="options" id="optionsFieldset">
+          <legend class="q-text" id="questionText" dir="auto"></legend>
+          <div id="optionsList" style="display:grid;gap:10px"></div>
+        </fieldset>
+        <div class="nav-buttons">
+          <button type="button" class="btn btn-secondary" id="prevBtn">&larr; Previous</button>
+          <button type="button" class="btn btn-primary" id="nextBtn">Next &rarr;</button>
+        </div>
+      </article>
+    </section>
+
+    <aside class="card panel" aria-label="Question navigator">
+      <h2>Question navigator</h2>
+      <p class="summary" id="navSummary"></p>
+      <div class="nav-grid" id="navGrid"></div>
+      <div class="legend" aria-hidden="true">
+        <span><i class="current"></i>Current</span>
+        <span><i class="answered"></i>Answered</span>
+        <span><i></i>Unanswered</span>
+      </div>
+      <div class="panel-actions">
+        <button type="button" class="btn btn-submit" id="submitBtn">Submit quiz</button>
+        <button type="button" class="btn-link" id="restartLinkBtn">Restart quiz</button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ================= RESULTS VIEW ================= -->
+  <div id="resultsView" hidden>
+    <section class="card results-head" aria-labelledby="resultsTitle">
+      <div class="score-ring" id="scoreRing" role="img" aria-label="Score">
+        <div><span><strong id="scorePercent">0%</strong><small id="scoreFraction"></small></span></div>
+      </div>
+      <div>
+        <h2 id="resultsTitle">Quiz results</h2>
+        <p id="resultsMessage"></p>
+        <div class="stats" id="statsGrid"></div>
+      </div>
+    </section>
+
+    <div class="review-toolbar">
+      <h3>Review answers</h3>
+      <div class="filters" id="filters" role="group" aria-label="Filter review"></div>
+    </div>
+    <ol class="review-list" id="reviewList"></ol>
+
+    <div class="results-actions">
+      <button type="button" class="btn btn-primary" id="restartBtn">Restart quiz</button>
+    </div>
+  </div>
+</main>
+
+<dialog id="confirmDialog" aria-labelledby="confirmTitle">
+  <h2 id="confirmTitle"></h2>
+  <p id="confirmMessage"></p>
+  <div class="dialog-actions">
+    <button type="button" class="btn btn-secondary" id="confirmCancel">Cancel</button>
+    <button type="button" class="btn btn-primary" id="confirmOk">Confirm</button>
+  </div>
+</dialog>
+
+<script>
+/* =========================================================================
+   1. QUIZ SETTINGS + QUESTIONS  (edit this section to change the content)
+   -------------------------------------------------------------------------
+   Each question is an object:
+     id            : any unique number (used only for your own reference)
+     question      : the question text
+     options       : array of answer choices (2 or more)
+     correctAnswer : ZERO-BASED index of the correct option (0 = first option)
+                     or null if the correct answer is not known. Questions
+                     with null are shown but NOT counted in the score.
+   ========================================================================= */
+const quizSettings = {
+  title: "Chapter 1 & 2 Assessment Quiz",
+  description: "Programming Sheet, Sec 2. Choose the correct answer for each multiple-choice question, then submit to see your score and review your answers."
+};
+
+const questions = [
+  {
+    id: 1,
+    question: "Which of the following options represents the technology or main event associated with the 1970s and 1980s?",
+    options: [
+      "The emergence of smartphones",
+      "The spread of personal computers (PCs)",
+      "The spread of cloud computing",
+      "Making the Internet available for commercial use and the emergence of the Web"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 2,
+    question: "Which experimental observation describes the historical trend of the number of transistors on integrated circuits increasing at a rate of approximately doubling every two years?",
+    options: [
+      "Cloud computing",
+      "Moore's Law",
+      "Quantum superposition",
+      "Edge computing"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 3,
+    question: "What is the term that refers to a work system in which a person performs their tasks from home or from another remote location using the internet?",
+    options: [
+      "Online learning",
+      "E-commerce",
+      "Remote work",
+      "non-cash payment"
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 4,
+    question: "What is meant by the service \"Social Networking Services (SNS)\"?",
+    options: [
+      "Platforms that enable users to communicate and quickly publish and share content.",
+      "Selling and purchasing goods and services over the internet.",
+      "Paying for goods or services using non-cash methods.",
+      "An educational platform where lessons are provided online."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 5,
+    question: "Which technology processes data on the device itself immediately instead of sending it to the cloud to avoid delays in decision-making?",
+    options: [
+      "Cloud computing",
+      "Quantum computing",
+      "Edge computing",
+      "Social networking services"
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 6,
+    question: "Which of the following options best represents the precise concept of \"Augmented Reality (AR)\"?",
+    options: [
+      "A technology that places the user inside a fully computer-generated virtual environment.",
+      "A technology that adds digital elements or information to a scene of the real world.",
+      "A computational approach that uses the properties of quantum mechanics to process information.",
+      "A system for making payments with electronic money and QR codes."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 7,
+    question: "What distinguishes the qubit (qubit) from the classical bit in quantum computing?",
+    options: [
+      "It holds a single definite state, either 0 or 1, at any time.",
+      "It uses the principle of quantum superposition to be a combination of 0 and 1 at the same time.",
+      "It relies only on traditional integrated circuits and steady electric current.",
+      "Its use is restricted to simple calculations."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 8,
+    question: "What is meant by the term \"Cashless Payment\"?",
+    options: [
+      "Buying and selling goods and services at physical stores using paper cash.",
+      "Paying for goods or services by non-cash means such as cards, mobile apps, or QR codes.",
+      "Working from home using the internet and email.",
+      "Providing lessons and educational materials over the internet to users."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 9,
+    question: "In which time period did the Internet begin to be available for commercial use and the Web appear, which expanded public access to information?",
+    options: [
+      "The 1940s and 1960s.",
+      "The 1990s.",
+      "The 1970s and 1980s.",
+      "From the second decade of the millennium onward."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 10,
+    question: "Which technology uses artificial intelligence to assist in driving a vehicle using cameras and sensors to perceive the surroundings and make decisions?",
+    options: [
+      "Cloud computing.",
+      "Autonomous driving.",
+      "Virtual reality.",
+      "Quantum computing."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 11,
+    question: "What term describes information technology provided as a service over the Internet to support big data analysis and artificial intelligence?",
+    options: [
+      "Cloud computing.",
+      "Edge computing.",
+      "Classical bit.",
+      "Quantum correlation."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 12,
+    question: "Which of the following is the correct description of the concept \"Virtual Reality (VR)\"?",
+    options: [
+      "A technology that overlays digital information on top of images of the real world.",
+      "A technology that places the user inside a computer-generated virtual environment.",
+      "A technology for processing data on the device itself immediately without the cloud.",
+      "A system for making payments with electronic money and QR codes."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 13,
+    question: "The time period that witnessed the emergence of smartphones and the rapid spread of the Internet via mobile phones is:",
+    options: [
+      "The 1960s and 1970s.",
+      "The first decade of the millennium.",
+      "The 1990s.",
+      "The 2040s of the twenty-first centuries."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 14,
+    question: "A technology that adds digital elements or information to a scene from the real world is known as:",
+    options: [
+      "Virtual Reality (VR).",
+      "Autonomous driving.",
+      "Quantum computing.",
+      "Augmented Reality (AR)."
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 15,
+    question: "Which of the following observations accurately describes what \"Moore's Law\" does?",
+    options: [
+      "The number of transistors on an integrated circuit roughly doubles every two years.",
+      "The number of transistors remains constant and never changes over time.",
+      "The energy consumption of conventional computers doubles every year.",
+      "A decline in computing and data-processing capabilities over the years."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 16,
+    question: "An educational and training framework in which lessons and educational materials are delivered wholly or partly over the Internet is:",
+    options: [
+      "E‑commerce.",
+      "Remote work.",
+      "Cashless payment.",
+      "Online Learning"
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 17,
+    question: "Computers began to appear and were used mainly for military purposes and scientific calculations, such as the ENIAC, using vacuum tubes, during the period:",
+    options: [
+      "1940s.",
+      "1970s.",
+      "1990s.",
+      "the first decade of the millennium."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 18,
+    question: "A computing principle or approach that uses properties of quantum mechanics to process information and may provide advantages for certain classes of problems is:",
+    options: [
+      "Edge computing.",
+      "Quantum computing.",
+      "Cashless payment.",
+      "Social networking."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 19,
+    question: "Platforms that allow users to communicate, publish content, and share it quickly and are very effective in disseminating information are:",
+    options: [
+      "Social networking sites (SNS).",
+      "E-commerce.",
+      "Remote work.",
+      "Cloud computing."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 20,
+    question: "A mode of work in which a person performs their tasks and duties from home or another remote location using communication technologies and the Internet is called:",
+    options: [
+      "Online learning.",
+      "Remote work (Remote Work).",
+      "Autonomous driving.",
+      "Edge computing."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 21,
+    question: "Which of the following options represents the broad field that includes computer systems able to perform tasks such as learning, predicting, and recognizing speech and images?",
+    options: [
+      "Deep Learning",
+      "Artificial Intelligence",
+      "Machine Learning",
+      "Generative Artificial Intelligence"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 22,
+    question: "From the perspective of the sequence of AI technologies, what is \"Machine Learning\"?",
+    options: [
+      "A branch of artificial intelligence in which models learn patterns from data.",
+      "A method that relies exclusively on disconnected neural networks.",
+      "A system for generating images and video autonomously without training data.",
+      "A set of rules manually programmed in a strict and fixed way."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 23,
+    question: "What term describes a machine learning approach that relies on multi-layer neural networks to learn complex representations and patterns?",
+    options: [
+      "Machine learning.",
+      "Generative AI.",
+      "Deep learning.",
+      "Spam filter."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 24,
+    question: "What is the primary function of Generative AI systems?",
+    options: [
+      "Programming heuristic rules for legacy/older computers.",
+      "Creating new content such as text, images, audio, and software.",
+      "Only classifying spam emails without generating content.",
+      "Operating integrated circuits according to Moore's Law."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 25,
+    question: "Which of the following technologies do most modern generative AI systems rely on to create new content?",
+    options: [
+      "Explicitly programmed rules.",
+      "Deep learning models and neural networks.",
+      "Edge computing and Moore's Law.",
+      "Fixed classical bits."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 26,
+    question: "What is meant by the term \"hallucination\" when generative AI produces text?",
+    options: [
+      "Producing text that appears plausible and logical but is factually incorrect.",
+      "A complete stop in responding due to an Internet outage.",
+      "Generating images that are 100% accurate and perfectly match reality.",
+      "Classifying spam emails with very high accuracy."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 27,
+    question: "Which of the following is NOT a suitable example of \"generative artificial intelligence\" applications?",
+    options: [
+      "ChatGPT model for text generation.",
+      "AI-based image generation tools.",
+      "Spam message filter (Spam Filter).",
+      "Tools for generating voices and audio clips."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 28,
+    question: "What are the basic components that make up an artificial neural network for learning complex patterns from data?",
+    options: [
+      "Connected layers containing neurons whose weights change during training.",
+      "A set of vacuum tubes and simple electrical circuits.",
+      "Fixed code rules written with purely linear algorithms.",
+      "Manual switches to regulate current flow in the processor."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 29,
+    question: "Which of the following represents a branch of artificial intelligence in which the model learns patterns from data to make predictions or classifications without explicitly programming each rule?",
+    options: [
+      "Deep learning.",
+      "Generative artificial intelligence.",
+      "Machine learning.",
+      "Cloud computing."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 30,
+    question: "A machine learning method that relies on multi-layer neural networks to learn complex patterns and examples, such as image analysis and speech recognition, is:",
+    options: [
+      "Deep learning.",
+      "Artificial intelligence.",
+      "Generative artificial intelligence.",
+      "Traditional programming."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 31,
+    question: "A computer system inspired in a simplified way by the idea of interconnected neurons whose weights change during training is:",
+    options: [
+      "Quantum qubit.",
+      "Artificial neural network.",
+      "Classical bit.",
+      "Moore's Law."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 32,
+    question: "When generative artificial intelligence produces text that appears plausible but is not factually correct, this phenomenon is called:",
+    options: [
+      "Hallucination.",
+      "Quantum superposition.",
+      "Edge computing.",
+      "Linear operation."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 33,
+    question: "Which of the following is a direct example of \"machine learning\" applications?",
+    options: [
+      "Spam filters and product recommendations.",
+      "Generating complex artistic images and videos.",
+      "Processing data on vehicles' edge devices.",
+      "Operating integrated circuits according to Moore's Law."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 34,
+    question: "What is the precise description of “Generative AI (GenAI)”?",
+    options: [
+      "A system that specializes in classifying nuisance spam and removing viruses.",
+      "AI that uses deep learning to generate new data such as text and images.",
+      "A computing technology that uses quantum mechanics and parallel processing.",
+      "A simple neural network with only a single input and output layer."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 35,
+    question: "What are the layers located between the input layer and the output layer in an artificial neural network called?",
+    options: [
+      "Hidden layers.",
+      "Terminal layers.",
+      "Cloud layers.",
+      "Linear layers."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 36,
+    question: "What should students do to avoid the risks of “hallucination” when using generative AI in preparing their school reports?",
+    options: [
+      "Rely completely on the outputs without any human review.",
+      "Verify the outputs and their sources and compare them with reliable facts.",
+      "Avoid using phones and computers completely and permanently.",
+      "Copy texts verbatim and submit them directly to the teacher."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 37,
+    question: "Most current artificial intelligence systems are designed to perform:",
+    options: [
+      "A specific task or a limited set of tasks (narrow scope).",
+      "Simulate full human consciousness across all domains without restrictions.",
+      "Manually programming old household electrical appliances.",
+      "Manage operational military communication networks only."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 38,
+    question: "Which of the following options represents the most suitable technology for analyzing complex images and advanced speech recognition?",
+    options: [
+      "Deep learning based on multilayer neural networks.",
+      "Manually programmed rules in a fixed linear style.",
+      "Traditional cloud computing without artificial intelligence.",
+      "E-commerce and cashless payment"
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 39,
+    question: "What is the primary benefit of the speed that generative AI provides the student when preparing reports?",
+    options: [
+      "Helping to complete tasks quickly while needing to pay attention to the risks of inaccuracy.",
+      "Guaranteeing the accuracy of all information one hundred percent automatically.",
+      "Completely dispensing with official school books and resources.",
+      "Preventing hallucinations from occurring entirely."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 40,
+    question: "What is the proper procedure to follow when using generative AI tools in assignments and projects?",
+    options: [
+      "Always verify the accuracy of information and review original sources and references.",
+      "Consider everything produced by the screens as absolute scientific facts not open to doubt.",
+      "Not writing any school research and relying entirely on artificial intelligence.",
+      "Submitting AI outputs without reading or examining them."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 41,
+    question: "Which of the following is an example of a system that predicts preferences from past behavior data and displays recommendations?",
+    options: [
+      "Recommendation system.",
+      "Voice assistant.",
+      "Machine translation.",
+      "Face recognition."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 42,
+    question: "Which service automatically translates text into different languages as mentioned amongdaily AI services?",
+    options: [
+      "Recommendation system.",
+      "Voice assistant.",
+      "Machine translation.",
+      "Face recognition."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 43,
+    question: "What term refers to an artificial intelligence system that recognizes speech, understands commands, and executes them like Siri and Google Assistant?",
+    options: [
+      "Recommendation system",
+      "Voice assistant",
+      "Machine translation",
+      "Face recognition"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 44,
+    question: "Which of the following industrial sectors is associated with the phrase \"improving delivery routes\"?",
+    options: [
+      "Healthcare",
+      "Agriculture",
+      "Manufacturing",
+      "Logistics"
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 45,
+    question: "Which industry uses artificial intelligence to detect diseases from X-ray and CT scan images?",
+    options: [
+      "Healthcare",
+      "Agriculture",
+      "Manufacturing",
+      "Logistics"
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 46,
+    question: "Which of the following options represents the main task of artificial intelligence in the agriculture sector?",
+    options: [
+      "Improving delivery routes",
+      "Predicting harvest time and detecting pests and diseases",
+      "Product quality inspection and predictive maintenance",
+      "Analyzing medical images and drug discovery"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 47,
+    question: "What term describes the generation of incorrect or unsupported information that appears convincing by artificial intelligence?",
+    options: [
+      "Black-box problem.",
+      "Hallucination.",
+      "Discrimination or bias.",
+      "Insufficient training data."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 48,
+    question: "What is meant by the \"black-box problem\" in the context of artificial intelligence applications?",
+    options: [
+      "Generating incorrect information that appears convincing to the user.",
+      "Lack of clarity about how the AI arrived at its judgment or decision.",
+      "Using copyrighted protected materials as training data.",
+      "Lack of or unrepresentative training data that does not accurately reflect reality."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 49,
+    question: "Which of the following services is used to unlock a smartphone and to automatically detect and recognize people's faces in photos?",
+    options: [
+      "Recommendation system.",
+      "Voice assistant.",
+      "Machine translation.",
+      "Face recognition."
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 50,
+    question: "Which technology is used to inspect product quality and predict machine failures before they occur?",
+    options: [
+      "AI for image-based diagnosis.",
+      "AI in manufacturing and predictive maintenance.",
+      "Recommendation systems and voice assistant.",
+      "Machine translation and social networks."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 51,
+    question: "Among AI usage precautions, what does the phenomenon \"hallucination\" mean?",
+    options: [
+      "Not knowing how the system reached its decision.",
+      "Generating incorrect or unsupported information that appears convincing.",
+      "Presence of bias in the training data.",
+      "Violation of data copyright."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 52,
+    question: "Which of the following is the correct description of what artificial intelligence excels at?",
+    options: [
+      "Finding and classifying patterns in complex data and performing probabilistic inference.",
+      "Making absolute ethical judgments without humans.",
+      "Guaranteeing outputs are completely free of any future bias.",
+      "Storing personal data and protecting it with complete certainty."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 53,
+    question: "A daily service used to understand speech and execute voice commands such as Siri and Google Assistant is:",
+    options: [
+      "Recommendation system.",
+      "Voice assistant.",
+      "Machine translation.",
+      "Face recognition."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 54,
+    question: "An industrial sector that uses AI to optimize delivery routes is:",
+    options: [
+      "Healthcare.",
+      "Agriculture.",
+      "Manufacturing.",
+      "Logistics."
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 55,
+    question: "What term describes the lack of clarity about how AI arrived at its judgment or decision?",
+    options: [
+      "Hallucination.",
+      "The black-box problem.",
+      "Discrimination or bias.",
+      "Probabilistic inference."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 56,
+    question: "Among the tasks AI is good at:",
+    options: [
+      "Making complex ethical decisions.",
+      "Recognizing images, sounds, and texts and generating content.",
+      "Guaranteeing absolute accuracy of results without training data.",
+      "Automatically protecting personal privacy."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 57,
+    question: "A system that predicts preferences from past behavior data and displays recommendations on platforms like YouTube and Amazon is called:",
+    options: [
+      "Recommendation system.",
+      "Voice assistant.",
+      "Machine translation.",
+      "Face recognition."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 58,
+    question: "Which of the following industries uses artificial intelligence to predict harvest timing and detect pests and diseases?",
+    options: [
+      "Healthcare.",
+      "Agriculture.",
+      "Manufacturing.",
+      "Logistics."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 59,
+    question: "Decisions with an ethical dimension that may lead to discrimination or bias are considered:",
+    options: [
+      "What AI deals with.",
+      "Something that requires caution when using AI.",
+      "Basic skills for deep learning.",
+      "The role of everyday recommendation systems."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 60,
+    question: "Bias in AI systems is defined as:",
+    options: [
+      "Something that may lead to unfair results.",
+      "Hallucination.",
+      "Quantum superposition.",
+      "Probabilistic inference."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 61,
+    question: "Which of the following options is an inappropriate or incorrect cause for the emergence of algorithmic bias?",
+    options: [
+      "Biased training data.",
+      "Reflection of previous discriminatory tendencies in the data.",
+      "Slow computer processing speed.",
+      "Lack of sufficient data about a particular attribute."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 62,
+    question: "What does the term \"algorithmic bias\" represent in AI systems?",
+    options: [
+      "A logic in AI outputs that may lead to unfair or harmful results.",
+      "A technique that enables humans to understand why AI made a certain decision.",
+      "Proper handling and protection of personal data.",
+      "Identifying the entities responsible for the system, its decisions, and its impacts."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 63,
+    question: "Which of the following options best represents the precise concept of \"training data\"?",
+    options: [
+      "The examples from which an artificial intelligence system learns its models before use.",
+      "A technique that enables humans to understand why the AI made a particular decision.",
+      "Identifying the parties responsible for the system, its decisions, and its impacts.",
+      "Not discriminating unfairly against any person or group."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 64,
+    question: "What is one privacy issue associated with artificial intelligence?",
+    options: [
+      "Improved computing speed of AI.",
+      "AI creating creative works.",
+      "Identifying and tracking individuals through facial recognition technology.",
+      "Increased efficiency of microprocessors."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 65,
+    question: "What is the term that describes the technique that enables humans to understand the factors and the reason that led an AI to make a particular judgment?",
+    options: [
+      "Cloud computing",
+      "Explainable Artificial Intelligence (XAI)",
+      "Edge computing",
+      "Algorithmic bias"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 66,
+    question: "What is the basic difference between \"responsibility\" and \"accountability\" as was explained in the lesson?",
+    options: [
+      "Responsibility means showing the decision-making process while accountability means the speed of processing.",
+      "Responsibility relates to defining the roles and duties of the parties, while accountability means identifying the parties that can be held to account according to their roles.",
+      "Accountability is the technology that understands the logic of artificial intelligence while responsibility is data collection.",
+      "There is no difference between them; the two terms are completely synonymous."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 67,
+    question: "What is the principle that refers to providing clear and appropriate information about the system, its use, the decision-making process and its limitations?",
+    options: [
+      "Fairness",
+      "Transparency",
+      "Privacy protection",
+      "Responsibility"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 68,
+    question: "A bias in AI outputs that may lead to unfair or harmful outcomes, arising from data or design, is called:",
+    options: [
+      "Explainable artificial intelligence (XAI)",
+      "Algorithmic bias.",
+      "Absolute transparency.",
+      "Privacy protection."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 69,
+    question: "The technique that enables humans to understand why AI made a certain decision and helps avoid the black-box problem is:",
+    options: [
+      "Explainable artificial intelligence (XAI)",
+      "Edge computing.",
+      "Training data.",
+      "Algorithmic bias."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 70,
+    question: "The principle that means handling personal information appropriately and protecting it is:",
+    options: [
+      "Fairness",
+      "Transparency",
+      "Privacy protection",
+      "Accountability"
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 71,
+    question: "Identify the parties responsible for the system, its decisions, and its effects, and the possibility of holding them accountable according to their roles — this exemplifies the principle of:",
+    options: [
+      "Transparency",
+      "Fairness",
+      "Accountability",
+      "Privacy protection"
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 72,
+    question: "The examples that an AI system learns from before its use and that directly affect the quality of its outputs are called:",
+    options: [
+      "Training data.",
+      "Encryption algorithms.",
+      "Peripheral devices.",
+      "Random-access memory (RAM)."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 73,
+    question: "Providing clear and appropriate information about the system, its use, the decision-making process, and its limits is an accurate definition of the principle of:",
+    options: [
+      "Fairness.",
+      "Transparency.",
+      "Accountability.",
+      "Privacy protection."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 74,
+    question: "Non-discrimination against any particular person or group in AI judgments and outputs exemplifies the principle of:",
+    options: [
+      "Fairness.",
+      "Transparency.",
+      "Privacy protection.",
+      "Accountability."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 75,
+    question: "The method or technique that helps humans understand the factors that contributed to the system reaching a particular output or decision is:",
+    options: [
+      "algorithmic bias.",
+      "explainable artificial intelligence (XAI)",
+      "aggregate data collection.",
+      "network auditing."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 76,
+    question: "Identifying the roles and duties of the parties involved in developing, operating, and usingthe system (developer, operator, user) refers to the term:",
+    options: [
+      "responsibility.",
+      "algorithmic bias.",
+      "training data.",
+      "transparency."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 77,
+    question: "A system or technology that collects large quantities of online behavioral data and allows tracking individuals in public places raises issues related to:",
+    options: [
+      "computational processing speed.",
+      "privacy protection",
+      "central memory efficiency.",
+      "Moore's Law."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 78,
+    question: "One of the mechanisms that represents an accurate description of the principle \"accountability\"",
+    options: [
+      "Providing clear information about the system and its boundaries",
+      "Not discriminating unfairly against any person or group",
+      "Identifying the parties responsible for the system and its decisions and the possibility of holding them accountable according to their roles",
+      "Understanding the factors that contributed to the system reaching a particular output"
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 79,
+    question: "Which of the following options is a clear example of bias in artificial intelligence systems?",
+    options: [
+      "A hiring system that favors a group in an unfair way, or a face-recognition system whose accuracy decreases for certain groups",
+      "A program to organize personal folders and files on the personal computer",
+      "An app for calculating simple mathematical operations and engineering calculations",
+      "A tool for editing landscape photos and enhancing their lighting"
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 80,
+    question: "Which of the following techniques is primarily used to encrypt session data quickly and efficiently after the handshake and security agreement are complete?",
+    options: [
+      "Public-key encryption.",
+      "Symmetric encryption.",
+      "Digital signature.",
+      "Digital certificate."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 81,
+    question: "What are the steps called that establish a secure connection and verify the server's identity and domain name over the HTTPS protocol?",
+    options: [
+      "TLS handshake.",
+      "Digital signature.",
+      "Two-factor authentication.",
+      "Symmetric encryption."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 82,
+    question: "Which of the following represents two factors from two different categories (knowledge and possession) used in two-factor authentication for banking services?",
+    options: [
+      "Password + second text password (SMS)",
+      "Password + One-time password (OTP)",
+      "Fingerprint + face recognition",
+      "Paper identity card + username only"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 83,
+    question: "What is meant by the term multi-factor authentication (MFA)?",
+    options: [
+      "Using a single extremely strong and complex password.",
+      "Using two or more factors from different categories such as knowledge, possession, and biometrics.",
+      "Relying solely on a fingerprint to log in.",
+      "Using an email address with the traditional password."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 84,
+    question: "Which technology helps the browser verify the server’s identity and the certificate’s association with the domain name it connects to?",
+    options: [
+      "Symmetric encryption",
+      "Digital signature",
+      "Digital certificate",
+      "Two-factor authentication"
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 85,
+    question: "Which of the following technologies detects tampering and impersonation and provides evidence that supports non-repudiation?",
+    options: [
+      "Symmetric encryption",
+      "Digital signature",
+      "TLS handshake",
+      "Two-factor authentication"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 86,
+    question: "Which of the following technologies prevents the content of a communication from being read by third parties while data is transmitted over the network?",
+    options: [
+      "Encryption (symmetric key and public key).",
+      "Digital signature.",
+      "Two-factor authentication (2FA).",
+      "Digital certificate."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 87,
+    question: "Among the following options, which one is an incorrect example of two-factor authentication because it relies on the same class of factor (knowledge)?",
+    options: [
+      "Password + one-time password sent to the phone.",
+      "Password + fingerprint.",
+      "Password + second static password.",
+      "Password + code from an authenticator app."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 88,
+    question: "The HTTP protocol carried over a secure TLS connection that provides confidentiality and integrity of data during transmission is known as:",
+    options: [
+      "HTTPS",
+      "FTP",
+      "SMTP",
+      "DNS"
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 89,
+    question: "Using two independent factors from two different categories to prove identity is known as:",
+    options: [
+      "Symmetric encryption.",
+      "Two-factor authentication (2FA)",
+      "Digital signature.",
+      "Digital certificate."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 90,
+    question: "A technology that detects tampering and impersonation and provides evidence supporting non-repudiation is:",
+    options: [
+      "Digital signature.",
+      "Public-key encryption.",
+      "TLS handshake.",
+      "Cloud computing."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 91,
+    question: "Which of the following accurately represents categories of multi-factor authentication (MFA)?",
+    options: [
+      "Knowledge, possession, and biometric traits.",
+      "Speed, efficiency, and cost.",
+      "Public key, private key, and password.",
+      "Wireless connection, local network, and cloud."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 92,
+    question: "A pair of related keys consisting of a public key and a private key used in encryption to secure communication is:",
+    options: [
+      "Public-key encryption.",
+      "Symmetric encryption.",
+      "The quantum qubit.",
+      "The classical bit."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 93,
+    question: "A service or system that helps the browser verify the server's identity and that the domain name matches the digital certificate is:",
+    options: [
+      "The digital signature.",
+      "The digital certificate.",
+      "Symmetric encryption.",
+      "Two-factor authentication."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 94,
+    question: "Which of the following is a correct example of a \"possession\" factor in two-factor authentication?",
+    options: [
+      "Knowing the secret question.",
+      "A one-time password sent to the phone or a smart card.",
+      "The user's fingerprint.",
+      "Facial recognition"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 95,
+    question: "Combinations of security technologies in online stores ensure protection of registration and payment by:",
+    options: [
+      "Relying on only one technology for faster implementation.",
+      "Combining encryption, certificates, signatures, and two-factor authentication to reduce multiple risks.",
+      "Eliminating the use of passwords entirely.",
+      "Relying solely on symmetric encryption without any authentication."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 96,
+    question: "The steps of establishing a secure connection and agreeing on shared parameters from which session keys are derived are called:",
+    options: [
+      "Handshake (TLS)",
+      "Symmetric encryption.",
+      "Digital signature.",
+      "Digital certificate."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 97,
+    question: "Using two or more factors from different categories to prove identity (such as knowledge, possession, and biometric traits) is called:",
+    options: [
+      "Multi-factor authentication (MFA)",
+      "Public-key cryptography.",
+      "Handshake (TLS)",
+      "Symmetric encryption."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 98,
+    question: "Which of the following is an example of a \"biometric\" factor in authentication?",
+    options: [
+      "Text password.",
+      "Fingerprint or face recognition.",
+      "ATM card.",
+      "Verification code via SMS."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 99,
+    question: "Which of the following options is the accurate definition of the concept \"defense in depth\" in network security?",
+    options: [
+      "Relying entirely on a strong firewall at the network perimeter.",
+      "Using multiple layers of security controls so that other layers reduce the risk if one layer fails.",
+      "Granting automatic trust to all devices within the organization's geographic scope.",
+      "Encrypting all traffic as a precaution when using public Wi‑Fi networks."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 100,
+    question: "What term is used for a system or software that monitors network traffic and allows or blocks it according to defined security rules?",
+    options: [
+      "Virtual Private Network (VPN).",
+      "Isolated zone (DMZ).",
+      "Firewall.",
+      "Zero Trust approach."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 101,
+    question: "What term refers to a private logical connection or network created over a public network such as the Internet that uses encryption to protect the data?",
+    options: [
+      "Firewall",
+      "Virtual Private Network (VPN)",
+      "Demilitarized Zone (DMZ)",
+      "Zero Trust"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 102,
+    question: "Which of the following options best and most commonly represents the appropriate use of a Virtual Private Network (VPN) in modern work environments?",
+    options: [
+      "Securely connecting to the organization's network from home or while on the move / remote work.",
+      "Protecting endpoints from viruses and removing them automatically without auxiliary software.",
+      "Monitoring local network traffic and preventing random electronic spam.",
+      "Providing platforms that allow users to publish and share content at extremely high speeds."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 103,
+    question: "What is meant by the term \"Demilitarized Zone (DMZ)\" in network security architecture?",
+    options: [
+      "A fully public open network that allows attackers to access sensitive databases.",
+      "An area where servers exposed to the external network are placed separately from the organization's internal network.",
+      "Malicious software that monitors traffic and automatically modifies firewall rules.",
+      "An encrypted private virtual line that connects different branches across the public internet."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 104,
+    question: "What is the basic assumption underlying the \"Zero Trust\" approach to securing an organization's resources?",
+    options: [
+      "Considering every device or user inside the organization's network to be fully trusted automatically.",
+      "Not automatically granting trust to a user or device merely because it is inside the network or owned by the organization, and instead verifying identity and context.",
+      "Absolute reliance on the external security perimeter and not inspecting internal applications.",
+      "Encrypting email messages only without concerning oneself with data access privileges."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 105,
+    question: "What is the concept that describes the traditional boundaries that assume what is inside the organization's network is completely safe and what is outside is unsafe, boundaries that have been blurred by cloud services and remote work?",
+    options: [
+      "Demilitarized Zone.",
+      "Security perimeter.",
+      "Edge computing.",
+      "Quantum superposition."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 106,
+    question: "Which of the following \"defense in depth\" layers is directly associated with installing antivirus software and updating the operating system?",
+    options: [
+      "Network entry.",
+      "Communication path.",
+      "Server configuration.",
+      "Endpoints."
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 107,
+    question: "Which of the following devices or systems monitors network traffic and allows or blocks it according to defined security rules?",
+    options: [
+      "Firewall.",
+      "Isolated zone (DMZ).",
+      "Virtual Private Network (VPN).",
+      "Edge computing."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 108,
+    question: "What is the name of the zone where public-facing servers are isolated from the internal network to reduce the impact of attacks?",
+    options: [
+      "Security perimeter.",
+      "Isolated zone (DMZ).",
+      "Communication path.",
+      "Endpoints."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 109,
+    question: "Which term describes a security approach that does not automatically grant trust to a user or device simply because it is inside the network?",
+    options: [
+      "Defense in depth.",
+      "Firewall.",
+      "Zero Trust approach.",
+      "Virtual Private Network (VPN)."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 110,
+    question: "Which of the following options represents the primary use of a Virtual Private Network (VPN) to connect offices or employees?",
+    options: [
+      "Encrypt the connection and protect data across untrusted networks or when working remotely.",
+      "Automatically remove viruses present on the hard disk.",
+      "Extend public Internet connections without requiring passwords.",
+      "Provide a graphical interface for managing large databases."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 111,
+    question: "The technology that creates a private virtual encrypted tunnel over the Internet for secure remote connection is:",
+    options: [
+      "Firewall",
+      "Virtual Private Network (VPN)",
+      "Demilitarized Zone (DMZ)",
+      "Zero Trust"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 112,
+    question: "The defense-in-depth layer that concerns installing antivirus software and keeping the operating system updated is:",
+    options: [
+      "Network perimeter",
+      "Connection path",
+      "Server tier",
+      "Endpoints"
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 113,
+    question: "The traditional boundary that assumes everything inside the organization's network is completely safe and everything outside is dangerous is known as:",
+    options: [
+      "Security perimeter",
+      "Demilitarized Zone (DMZ)",
+      "Quantum entanglement",
+      "Edge computing"
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 114,
+    question: "A system or program that monitors network traffic and allows or blocks it according to specified security rules:",
+    options: [
+      "Firewall (Firewall).",
+      "Virtual Private Network (VPN).",
+      "Qubit.",
+      "Edge computing."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 115,
+    question: "An area where servers exposed to the external network are placed separately from the internal network is called:",
+    options: [
+      "Firewall.",
+      "Demilitarized Zone (DMZ).",
+      "Virtual Private Network (VPN).",
+      "Endpoints."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 116,
+    question: "A security approach that does not automatically trust a user or device merely because it is inside the network or owned by the organization is:",
+    options: [
+      "Defense in Depth.",
+      "Zero Trust.",
+      "Security Perimeter.",
+      "Firewall."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 117,
+    question: "Which of the following represents the first layer (network entry) in a defense-in- depth strategy?",
+    options: [
+      "Encrypting the connection using a Virtual Private Network (VPN).",
+      "Preventing unauthorized connections using a Firewall.",
+      "Isolating public-facing servers using a Demilitarized Zone (DMZ).",
+      "Installing antivirus software on endpoints."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 118,
+    question: "A private connection or logical network over a public network such as the Internet that uses encryption and tunneling techniques to protect the data is:",
+    options: [
+      "Virtual Private Network (VPN)",
+      "Isolated zone",
+      "Firewall",
+      "Zero-trust approach"
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 119,
+    question: "Which of the following options is a typical example of a security incident that affects service availability?",
+    options: [
+      "Exfiltration of personal or confidential data to the outside.",
+      "Modification of data within a system without authorization.",
+      "Service outage due to an attack on the server.",
+      "Establishing response procedures and structures in advance."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 120,
+    question: "Which is the first phase of the incident response model that aims to establish response procedures and structures in advance in preparation for incidents?",
+    options: [
+      "Detection.",
+      "Preparation.",
+      "Containment.",
+      "Recovery."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 121,
+    question: "What is the term used for the action of isolating the affected part or restricting its impact in the appropriate way to prevent the spread of the problem?",
+    options: [
+      "Preparation.",
+      "Detection.",
+      "Containment.",
+      "Recovery."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 122,
+    question: "How is the risk score calculated in the simplified matrix?",
+    options: [
+      "Impact + Likelihood.",
+      "Impact × Likelihood.",
+      "Impact - Likelihood.",
+      "Impact ÷ Likelihood."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 123,
+    question: "Which phase involves returning systems and services to a safe, normal operating state and may include recovery from a healthy backup?",
+    options: [
+      "Preparation.",
+      "Containment.",
+      "Recovery.",
+      "Lessons Learned and Improvement."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 124,
+    question: "Which phase concludes the six incident response phases and includes analyzing what happened and documenting lessons to improve controls?",
+    options: [
+      "Detection.",
+      "Threat Removal.",
+      "Recovery.",
+      "Lessons Learned and Improvement."
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 125,
+    question: "According to the Risk Assessment Matrix, which category is considered the highest priority and should be addressed first?",
+    options: [
+      "Low impact and low likelihood.",
+      "Medium impact and medium likelihood.",
+      "High impact and high likelihood.",
+      "Low impact and high likelihood."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 126,
+    question: "What is meant by the term \"impact\" in the context of risk assessment?",
+    options: [
+      "The likelihood of the event occurring.",
+      "The amount of damage if the risk occurs.",
+      "The speed of response to the security incident.",
+      "The number of times the incident repeats."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 127,
+    question: "An event that affects the confidentiality, integrity, or availability of information, or violates a security policy, is called:",
+    options: [
+      "A security incident.",
+      "A risk assessment.",
+      "Threat containment.",
+      "A lesson learned."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 128,
+    question: "The phase used to limit the spread of damage and isolate the affected part is called:",
+    options: [
+      "Preparation.",
+      "Containment.",
+      "Recovery.",
+      "Eradication."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 129,
+    question: "The risks that represent the highest priority in a risk assessment matrix are those with:",
+    options: [
+      "Low impact and rapid containment.",
+      "High impact and high likelihood.",
+      "Minimal impact and low likelihood.",
+      "Medium impact and zero likelihood."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 130,
+    question: "What does the \"Eradication\" phase mean in the incident response model?",
+    options: [
+      "Establishing response procedures in advance.",
+      "Removing the threat and its causes, such as deleting malware.",
+      "Restoring systems from a backup.",
+      "Documenting lessons learned."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 131,
+    question: "Altering data within a system without authorization is a typical example of:",
+    options: [
+      "Service disruption.",
+      "Information leakage.",
+      "Data tampering.",
+      "Pre-incident preparation."
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 132,
+    question: "The stage concerned with returning systems and services to a secure and normal operating state, including recovery from a backup, is:",
+    options: [
+      "Recovery",
+      "Containment",
+      "Detection",
+      "Preparation"
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 133,
+    question: "In the simplified model, the risk level is calculated as follows:",
+    options: [
+      "Impact ÷ Likelihood",
+      "Impact + Likelihood",
+      "Impact × Likelihood",
+      "Impact - Likelihood"
+    ],
+    correctAnswer: 2
+  },
+  {
+    id: 134,
+    question: "What is meant by the term \"Likelihood\" in risk assessment?",
+    options: [
+      "The expected amount of damage if the event occurs",
+      "The probability/extent of the event or risk occurring",
+      "The number of devices affected by the attack",
+      "The speed of executing response stages"
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 135,
+    question: "The leakage of personal or confidential information to the outside is a security incident of the type:",
+    options: [
+      "Information leakage.",
+      "Service interruption.",
+      "Data tampering.",
+      "Secure recovery."
+    ],
+    correctAnswer: 0
+  },
+  {
+    id: 136,
+    question: "Analyzing what happened, documenting lessons, and improving controls to reduce the likelihood of recurrence takes place in the phase:",
+    options: [
+      "Preparation.",
+      "Containment.",
+      "Eradication.",
+      "Lessons learned and improvement."
+    ],
+    correctAnswer: 3
+  },
+  {
+    id: 137,
+    question: "Risks with high impact and low likelihood in a risk assessment matrix are usually classified as being:",
+    options: [
+      "Very high.",
+      "Medium.",
+      "Very low.",
+      "Negligible."
+    ],
+    correctAnswer: 1
+  },
+  {
+    id: 138,
+    question: "The phase that includes detecting and confirming the occurrence of a security incident after prior preparation is the:",
+    options: [
+      "Recovery.",
+      "Detection.",
+      "Lessons learned.",
+      "Eradication."
+    ],
+    correctAnswer: 1
+  }
+];
+
+/* =========================================================================
+   2. STATE VARIABLES
+   ========================================================================= */
+let currentIndex = 0;      // which question is on screen
+let answers = [];          // answers[i] = chosen option index for question i, or null
+let isSubmitted = false;   // true once the quiz has been submitted (locks answers)
+let reviewFilter = "all";  // active filter in the review list
+let lastResults = null;    // cached output of calculateResults()
+
+const OPTION_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+/* =========================================================================
+   3. SMALL HELPERS (pure functions, no DOM access)
+   ========================================================================= */
+
+/** True when a question has a usable answer key. */
+function isGraded(question) {
+  return Number.isInteger(question.correctAnswer) &&
+         question.correctAnswer >= 0 &&
+         question.correctAnswer < question.options.length;
+}
+
+/** Returns a list of problems found in the questions array (empty = all good). */
+function validateQuestions(list) {
+  const problems = [];
+  list.forEach((q, i) => {
+    const n = i + 1;
+    if (!q || typeof q.question !== "string" || !q.question.trim()) problems.push("Question " + n + " has no question text.");
+    else if (!Array.isArray(q.options) || q.options.length < 2) problems.push("Question " + n + " needs at least 2 options.");
+    else if (q.correctAnswer !== null && !isGraded(q)) problems.push("Question " + n + " has an invalid correctAnswer (use null or a zero-based option index).");
+  });
+  return problems;
+}
+
+/** Creates an element with optional class and text. */
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+/** Counts how many questions have an answer selected. */
+function countAnswered() {
+  return answers.filter(a => a !== null).length;
+}
+
+/* =========================================================================
+   4. SCORING (pure: takes questions + answers, returns numbers)
+   -------------------------------------------------------------------------
+   - Questions with correctAnswer === null are "ungraded" and never counted
+     as correct or incorrect.
+   - Percentage = correct / graded questions.
+   - "Incorrect" = answered a graded question wrongly.
+   - "Unanswered" = graded question left blank (counts as not correct).
+   ========================================================================= */
+function calculateResults(questionList, answerList) {
+  const r = { total: questionList.length, graded: 0, ungraded: 0, correct: 0, incorrect: 0, unanswered: 0, percent: 0, details: [] };
+
+  questionList.forEach((q, i) => {
+    const picked = answerList[i] === undefined ? null : answerList[i];
+    let status;
+    if (!isGraded(q)) {
+      r.ungraded++;
+      status = "ungraded";
+    } else {
+      r.graded++;
+      if (picked === null)               { r.unanswered++; status = "unanswered"; }
+      else if (picked === q.correctAnswer) { r.correct++;    status = "correct"; }
+      else                               { r.incorrect++;  status = "incorrect"; }
+    }
+    r.details.push({ index: i, picked: picked, status: status });
+  });
+
+  r.percent = r.graded > 0 ? Math.round((r.correct / r.graded) * 1000) / 10 : 0;
+  return r;
+}
+
+/* =========================================================================
+   5. RENDERING FUNCTIONS  (quiz view)
+   ========================================================================= */
+const $ = id => document.getElementById(id);
+
+/** Header title, description and chips. */
+function renderHeader() {
+  $("quizTitle").textContent = quizSettings.title;
+  $("quizDescription").textContent = quizSettings.description;
+  document.title = quizSettings.title;
+  const meta = $("headerMeta");
+  meta.innerHTML = "";
+  meta.appendChild(el("span", "chip", questions.length + " questions"));
+  meta.appendChild(el("span", "chip", "Multiple choice"));
+}
+
+/** Banners for data problems and for questions that have no answer key. */
+function renderBanners(problems) {
+  const box = $("banners");
+  box.innerHTML = "";
+  if (problems.length) {
+    box.appendChild(el("div", "banner error", "Some questions could not be loaded: " + problems.join(" ")));
+  }
+  const ungraded = questions.filter(q => !isGraded(q)).length;
+  if (ungraded > 0) {
+    box.appendChild(el("div", "banner warn", "Answer key unavailable for " + ungraded + " question" + (ungraded === 1 ? "" : "s") + ". These are shown but not included in your score."));
+  }
+}
+
+/** Draws the current question and its answer choices. */
+function renderQuestion() {
+  const q = questions[currentIndex];
+  const total = questions.length;
+
+  $("questionCounter").textContent = "Question " + (currentIndex + 1) + " of " + total;
+  const label = $("questionLabel");
+  label.textContent = "Question " + (currentIndex + 1);
+  label.classList.toggle("ungraded", !isGraded(q));
+  if (!isGraded(q)) label.textContent += " (not graded: no answer key)";
+  $("questionText").textContent = q.question;
+
+  const list = $("optionsList");
+  list.innerHTML = "";
+  q.options.forEach((text, optionIndex) => {
+    const label = el("label", "option");
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "answer";
+    input.value = String(optionIndex);
+    input.checked = answers[currentIndex] === optionIndex;
+    input.disabled = isSubmitted;
+    input.addEventListener("change", () => selectAnswer(optionIndex));
+    label.appendChild(input);
+    label.appendChild(el("span", "marker", OPTION_LETTERS[optionIndex] || String(optionIndex + 1)));
+    const t = el("span", "label", text);
+    t.dir = "auto";
+    label.appendChild(t);
+    list.appendChild(label);
+  });
+  updateOptionHighlight();
+
+  $("prevBtn").disabled = currentIndex === 0;
+  $("nextBtn").disabled = currentIndex === total - 1;
+}
+
+/** Highlights the selected option without re-creating the inputs (keeps keyboard focus). */
+function updateOptionHighlight() {
+  const picked = answers[currentIndex];
+  document.querySelectorAll("#optionsList .option").forEach((node, i) => {
+    node.classList.toggle("selected", picked === i);
+  });
+}
+
+/** Progress bar + answered counter. */
+function renderProgress() {
+  const total = questions.length;
+  const answered = countAnswered();
+  const pct = total ? Math.round((answered / total) * 100) : 0;
+  $("progressFill").style.width = pct + "%";
+  $("progressBar").setAttribute("aria-valuenow", String(pct));
+  $("progressText").textContent = answered + " of " + total + " answered (" + pct + "%)";
+}
+
+/** Question navigator grid (jump to any question). */
+function renderNavigator() {
+  const grid = $("navGrid");
+  grid.innerHTML = "";
+  questions.forEach((q, i) => {
+    const btn = el("button", "nav-btn", String(i + 1));
+    btn.type = "button";
+    const isAnswered = answers[i] !== null;
+    if (isAnswered) btn.classList.add("answered");
+    if (i === currentIndex) { btn.classList.add("current"); btn.setAttribute("aria-current", "true"); }
+    btn.setAttribute("aria-label", "Go to question " + (i + 1) + (isAnswered ? ", answered" : ", unanswered"));
+    btn.addEventListener("click", () => goToQuestion(i));
+    grid.appendChild(btn);
+  });
+  const left = questions.length - countAnswered();
+  $("navSummary").textContent = left === 0 ? "All questions answered." : left + " question" + (left === 1 ? "" : "s") + " still unanswered.";
+}
+
+/** Re-draws everything that depends on the current question or answers. */
+function renderAll() {
+  renderQuestion();
+  renderProgress();
+  renderNavigator();
+  $("submitBtn").disabled = isSubmitted;
+}
+
+/* =========================================================================
+   6. ANSWER SELECTION AND NAVIGATION
+   ========================================================================= */
+function selectAnswer(optionIndex) {
+  if (isSubmitted) return;               // answers are locked after submission
+  answers[currentIndex] = optionIndex;
+  updateOptionHighlight();
+  renderProgress();
+  renderNavigator();
+}
+
+function goToQuestion(index) {
+  if (index < 0 || index >= questions.length) return;
+  currentIndex = index;
+  renderAll();
+}
+
+function goNext()     { goToQuestion(currentIndex + 1); }
+function goPrevious() { goToQuestion(currentIndex - 1); }
+
+/** Promise-based confirm dialog (falls back to window.confirm on old browsers). */
+function askConfirm(title, message, okLabel) {
+  const dlg = $("confirmDialog");
+  if (typeof dlg.showModal !== "function") return Promise.resolve(window.confirm(title + "\n\n" + message));
+  $("confirmTitle").textContent = title;
+  $("confirmMessage").textContent = message;
+  $("confirmOk").textContent = okLabel || "Confirm";
+  return new Promise(resolve => {
+    const done = value => { dlg.removeEventListener("close", onClose); dlg.close(); resolve(value); };
+    const onClose = () => resolve(false);          // Esc key
+    $("confirmOk").onclick = () => done(true);
+    $("confirmCancel").onclick = () => done(false);
+    dlg.addEventListener("close", onClose);
+    dlg.showModal();
+  });
+}
+
+/* =========================================================================
+   7. QUIZ SUBMISSION
+   ========================================================================= */
+async function handleSubmitClick() {
+  if (isSubmitted) return;               // guard against double submission
+  const unanswered = questions.length - countAnswered();
+  const message = unanswered > 0
+    ? "You have " + unanswered + " unanswered question" + (unanswered === 1 ? "" : "s") + ". Unanswered questions score no marks. Submit anyway?"
+    : "You have answered every question. Once submitted you cannot change your answers.";
+  const ok = await askConfirm("Submit quiz?", message, "Submit quiz");
+  if (ok) submitQuiz();
+}
+
+function submitQuiz() {
+  if (isSubmitted) return;               // second guard: never score twice
+  isSubmitted = true;
+  $("submitBtn").disabled = true;
+  lastResults = calculateResults(questions, answers);
+  showResults();
+}
+
+/* =========================================================================
+   8. RESULTS AND ANSWER REVIEW
+   ========================================================================= */
+function showResults() {
+  $("quizView").hidden = true;
+  $("resultsView").hidden = false;
+  renderResultsSummary();
+  reviewFilter = "all";
+  renderFilters();
+  renderReview();
+  window.scrollTo(0, 0);
+}
+
+function renderResultsSummary() {
+  const r = lastResults;
+  $("scorePercent").textContent = r.graded ? r.percent + "%" : "N/A";
+  $("scoreFraction").textContent = r.graded ? r.correct + " / " + r.graded : "no graded questions";
+  $("scoreRing").style.setProperty("--pct", String(r.graded ? r.percent : 0));
+  $("scoreRing").setAttribute("aria-label", r.graded ? "Score " + r.percent + " percent" : "No graded questions");
+
+  let message;
+  if (!r.graded) message = "None of the questions have an answer key, so no score could be calculated.";
+  else if (r.percent >= 85) message = "Excellent work. You have a strong grasp of this material.";
+  else if (r.percent >= 65) message = "Good effort. Review the questions you missed to close the gaps.";
+  else message = "Keep practising. Use the review below to study the correct answers.";
+  if (r.ungraded) message += " " + r.ungraded + " question" + (r.ungraded === 1 ? " was" : "s were") + " not graded (no answer key).";
+  $("resultsMessage").textContent = message;
+
+  const stats = [
+    ["Graded questions", r.graded, ""],
+    ["Correct", r.correct, "good"],
+    ["Incorrect", r.incorrect, "bad"],
+    ["Unanswered", r.unanswered, "bad"]
+  ];
+  if (r.ungraded) stats.push(["Not graded", r.ungraded, "warn"]);
+  const grid = $("statsGrid");
+  grid.innerHTML = "";
+  stats.forEach(([label, value, kind]) => {
+    const box = el("div", "stat" + (kind ? " " + kind : ""));
+    box.appendChild(el("b", "", String(value)));
+    box.appendChild(el("span", "", label));
+    grid.appendChild(box);
+  });
+}
+
+const FILTERS = [
+  { key: "all", label: "All" },
+  { key: "correct", label: "Correct" },
+  { key: "incorrect", label: "Incorrect" },
+  { key: "unanswered", label: "Unanswered" },
+  { key: "ungraded", label: "Not graded" }
+];
+
+function renderFilters() {
+  const box = $("filters");
+  box.innerHTML = "";
+  FILTERS.forEach(f => {
+    if (f.key === "ungraded" && lastResults.ungraded === 0) return;   // hide when not relevant
+    const count = f.key === "all" ? lastResults.total : lastResults[f.key === "ungraded" ? "ungraded" : f.key];
+    const btn = el("button", "filter-btn", f.label + " (" + count + ")");
+    btn.type = "button";
+    btn.setAttribute("aria-pressed", String(reviewFilter === f.key));
+    btn.addEventListener("click", () => { reviewFilter = f.key; renderFilters(); renderReview(); });
+    box.appendChild(btn);
+  });
+}
+
+const STATUS_TEXT = { correct: "Correct", incorrect: "Incorrect", unanswered: "Not answered", ungraded: "Not graded" };
+
+function optionText(q, index) {
+  return index === null ? "No answer" : OPTION_LETTERS[index] + ". " + q.options[index];
+}
+
+function renderReview() {
+  const list = $("reviewList");
+  list.innerHTML = "";
+  const items = lastResults.details.filter(d => reviewFilter === "all" || d.status === reviewFilter);
+  if (!items.length) {
+    const li = el("li", "card empty-note", "No questions in this category.");
+    list.appendChild(li);
+    return;
+  }
+
+  items.forEach(d => {
+    const q = questions[d.index];
+    const item = el("li", "card review-item " + d.status);
+
+    const top = el("div", "review-top");
+    top.appendChild(el("strong", "", "Question " + (d.index + 1)));
+    top.appendChild(el("span", "badge " + d.status, STATUS_TEXT[d.status]));
+    item.appendChild(top);
+
+    const qText = el("p", "review-q", q.question);
+    qText.dir = "auto";
+    item.appendChild(qText);
+
+    const opts = el("ul", "review-options");
+    q.options.forEach((text, i) => {
+      const li = el("li");
+      li.appendChild(el("span", "", OPTION_LETTERS[i] + "."));
+      const t = el("span", "", text);
+      t.dir = "auto";
+      li.appendChild(t);
+      const isCorrect = isGraded(q) && i === q.correctAnswer;
+      const isPicked = d.picked === i;
+      if (isCorrect)                    { li.classList.add("is-correct"); li.appendChild(el("span", "tag", isPicked ? "Your answer · Correct" : "Correct answer")); }
+      else if (isPicked && isGraded(q)) { li.classList.add("is-wrong");   li.appendChild(el("span", "tag", "Your answer")); }
+      else if (isPicked)                { li.classList.add("is-picked-ungraded"); li.appendChild(el("span", "tag", "Your answer")); }
+      opts.appendChild(li);
+    });
+    item.appendChild(opts);
+
+    const summary = el("div", "review-answers");
+    const yours = el("span"); yours.appendChild(el("b", "", "Your answer: ")); yours.appendChild(document.createTextNode(optionText(q, d.picked)));
+    const right = el("span"); right.appendChild(el("b", "", "Correct answer: "));
+    right.appendChild(document.createTextNode(isGraded(q) ? optionText(q, q.correctAnswer) : "Answer key unavailable"));
+    summary.appendChild(yours);
+    summary.appendChild(right);
+    item.appendChild(summary);
+
+    list.appendChild(item);
+  });
+}
+
+/* =========================================================================
+   9. RESTART
+   ========================================================================= */
+function resetQuiz() {
+  currentIndex = 0;
+  answers = questions.map(() => null);
+  isSubmitted = false;
+  lastResults = null;
+  reviewFilter = "all";
+  $("resultsView").hidden = true;
+  $("quizView").hidden = false;
+  $("submitBtn").disabled = false;
+  renderAll();
+  window.scrollTo(0, 0);
+}
+
+async function handleRestartClick() {
+  // No need to ask after submission; ask if the student would lose answers.
+  if (!isSubmitted && countAnswered() > 0) {
+    const ok = await askConfirm("Restart quiz?", "All your current answers will be cleared.", "Restart");
+    if (!ok) return;
+  }
+  resetQuiz();
+}
+
+/* =========================================================================
+   10. START UP
+   ========================================================================= */
+function initQuiz() {
+  const problems = validateQuestions(questions);
+  renderHeader();
+  renderBanners(problems);
+
+  if (problems.length || questions.length === 0) {
+    $("quizView").hidden = true;
+    if (!questions.length) $("banners").appendChild(el("div", "banner error", "There are no questions to show. Add questions to the questions array."));
+    return;
+  }
+
+  $("prevBtn").addEventListener("click", goPrevious);
+  $("nextBtn").addEventListener("click", goNext);
+  $("submitBtn").addEventListener("click", handleSubmitClick);
+  $("restartLinkBtn").addEventListener("click", handleRestartClick);
+  $("restartBtn").addEventListener("click", handleRestartClick);
+
+  // Keyboard shortcuts: left/right arrows move between questions (not while a dialog is open)
+  document.addEventListener("keydown", e => {
+    if (isSubmitted || $("confirmDialog").open) return;
+    if (e.altKey || e.ctrlKey || e.metaKey) return;
+    if (e.key === "ArrowRight" && e.target.type !== "radio") goNext();
+    if (e.key === "ArrowLeft" && e.target.type !== "radio") goPrevious();
+  });
+
+  resetQuiz();
+}
+
+if (typeof document !== "undefined" && document.getElementById("quizView")) initQuiz();
+</script>
+</body>
+</html>
